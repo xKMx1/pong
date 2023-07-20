@@ -1,5 +1,6 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
+#include <windows.h>
 
 class GameObject{
     public:
@@ -15,8 +16,8 @@ class Paddle : private GameObject{
         sf::Keyboard::Scancode m_move_down;
 
     public:
-        void initPaddle(float xPos, float yPos, sf::Keyboard::Scancode upKey, sf::Keyboard::Scancode downKey){
-            m_size.x = 100.0f;
+        Paddle(float xPos, float yPos, sf::Keyboard::Scancode upKey, sf::Keyboard::Scancode downKey){
+            m_size.x = 150.0f;
             m_size.y = 30.0f;
 
             m_move_up = upKey;
@@ -32,13 +33,19 @@ class Paddle : private GameObject{
             m_sprite.setSize(m_size);
         }
 
-        void movePaddle(sf::Event evnt){
-            if (evnt.key.scancode == m_move_up){
-                m_position.y += 10;
+        void movePaddle(sf::Keyboard::Scancode key){
+            if (key == m_move_up && m_position.y >= 0){
+                m_position.y -= 15;
+                m_sprite.setPosition(m_position);
             }
-            if (evnt.key.scancode == m_move_down){
-                m_position.y -= 10;     
+            if (key == m_move_down && m_position.y <= 650){
+                m_position.y += 15;  
+                m_sprite.setPosition(m_position);   
             }
+        }
+
+        int getPosition(){
+            return m_position.y;
         }
 
         sf::RectangleShape getSprite(){
@@ -47,10 +54,14 @@ class Paddle : private GameObject{
 };
 
 class Ball : private GameObject{
+    private:
+        sf::Vector2f m_position;
+        sf::Vector2f m_size;
+        sf::RectangleShape m_sprite;
     public:
-        void initBall(){
-            m_size.x = 15;
-            m_size.y = 15;
+        Ball(){
+            m_size.x = 20;
+            m_size.y = 20;
 
             m_position.x = 400;
             m_position.y = 400;
@@ -72,13 +83,9 @@ int main(){
     sf::RenderWindow window(sf::VideoMode(800, 800), "Pong");
     sf::Texture texture;
 
-    Paddle paddle1;
-    Paddle paddle2;
+    Paddle paddle1(740.0f, 325.0f, sf::Keyboard::Scancode::W, sf::Keyboard::Scancode::S);
+    Paddle paddle2(80.0f, 325.0f, sf::Keyboard::Scancode::Up, sf::Keyboard::Scancode::Down);
     Ball ball;
-
-    paddle1.initPaddle(100.0f, 350.0f, sf::Keyboard::Scancode::W, sf::Keyboard::Scancode::S);
-    paddle1.initPaddle(80.0f, 350.0f, sf::Keyboard::Scancode::Up, sf::Keyboard::Scancode::Down);
-    ball.initBall();
 
     window.setFramerateLimit(60);
     while(window.isOpen()){
@@ -91,15 +98,15 @@ int main(){
                     window.close();
                     break;
                 case sf::Event::KeyPressed:
-                    paddle1.movePaddle(event);
-                    paddle2.movePaddle(event);
+                    paddle1.movePaddle(event.key.scancode);
+                    paddle2.movePaddle(event.key.scancode);
             }
         }
 
+        window.clear();
         window.draw(paddle1.getSprite());
         window.draw(paddle2.getSprite());
         window.draw(ball.getSprite());
-        // window.clear(sf::Color(255,255,255));s
         window.display();
     }
     return 0;

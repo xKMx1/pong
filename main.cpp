@@ -15,6 +15,7 @@ class GameObject{
 class Paddle : private GameObject{
     private:
         int m_index;
+        int m_score;
         sf::Keyboard::Scancode m_move_up;
         sf::Keyboard::Scancode m_move_down;
 
@@ -22,6 +23,8 @@ class Paddle : private GameObject{
         Paddle(float xPos, float yPos, sf::Keyboard::Scancode upKey, sf::Keyboard::Scancode downKey){
             m_size.x = 150.0f;
             m_size.y = 30.0f;
+
+            m_score = 0;
 
             m_move_up = upKey;
             m_move_down = downKey;
@@ -51,6 +54,10 @@ class Paddle : private GameObject{
             return m_position.y;
         }
 
+        int* getScore(){
+            return &m_score;
+        }
+
         sf::RectangleShape getSprite(){
             return m_sprite;
         }
@@ -68,8 +75,8 @@ class Ball : private GameObject{
             m_size.x = 20;
             m_size.y = 20;
 
-            m_position.x = 400;
-            m_position.y = 400;
+            m_position.x = 400.0f;
+            m_position.y = 400.0f;
 
             m_angle = PI/3;
 
@@ -89,7 +96,12 @@ class Ball : private GameObject{
             m_velocity.y = sinf(m_angle);
         }
 
-        void detectCollision(int paddle1Y, int paddle2Y){
+        void setBallPosition(float x, float y){
+            m_position.x = x;
+            m_position.y = y;
+        }
+
+        void detectCollision(int paddle1Y, int paddle2Y, int* score1, int* score2){
             if(m_position.y >= paddle1Y && m_position.y <= paddle1Y + 150 && m_position.x < 80){            // if checking for collision with the first paddle
                 setVelocity(m_angle + PI/2);
             }
@@ -105,14 +117,25 @@ class Ball : private GameObject{
             if(m_position.y > 780){                 // if checking for bottom bound
                 setVelocity(m_angle + PI/2);
             }
+
+            if(m_position.x < 0){
+                *score2 += 1;
+                setBallPosition(400.0f, 400.0f);
+                m_sprite.setPosition(m_position);
+            }
+
+            if(m_position.x > 780){
+                *score1 += 1;
+                setBallPosition(400.0f, 400.0f);
+                m_sprite.setPosition(m_position);
+            }
         }
         
         void move(float dt){
-            // float angle = 30.0f;                        //TODO random angle generator
+                                                            //TODO random angle generator
             setVelocity(m_angle);                           //colision detection and angle cant be m_angle
             m_position += m_velocity * dt;
             m_sprite.setPosition(m_position);
-            std::cout << m_velocity.x << " | " << m_velocity.y << std::endl;
         }
 
 
@@ -146,8 +169,9 @@ int main(){
         }
 
         float dt = 3;
-        ball.detectCollision(paddle1.getSprite().getPosition().y, paddle2.getSprite().getPosition().y);
+        ball.detectCollision(paddle1.getSprite().getPosition().y, paddle2.getSprite().getPosition().y, paddle1.getScore(), paddle2.getScore());
         ball.move(dt);
+        std::cout << *paddle1.getScore() << " | " << *paddle2.getScore() << std::endl;
 
         window.clear();
         window.draw(paddle1.getSprite());

@@ -71,10 +71,12 @@ class Ball : private GameObject{
             m_position.x = 400;
             m_position.y = 400;
 
-            m_angle = 30.0f;
+            m_angle = PI/3;
 
             m_velocity.x = 0;
             m_velocity.y = 0;
+
+            setVelocity(m_angle);
 
             m_sprite.setFillColor(sf::Color(180,180,180));
             m_sprite.setPosition(m_position);
@@ -82,19 +84,26 @@ class Ball : private GameObject{
         }
 
         void setVelocity(float angle){
-            m_angle = angle * PI/180;
+            m_angle = angle;
             m_velocity.x = cosf(m_angle);
             m_velocity.y = sinf(m_angle);
         }
 
         void detectCollision(int paddle1Y, int paddle2Y){
-            if(m_position.y >= paddle1Y && m_position.y <= paddle1Y + 150 && m_position.x < 110){
-                setVelocity(m_angle*(180/PI) + 180);
-                std::cout << "colision 1" << std::endl;
+            if(m_position.y >= paddle1Y && m_position.y <= paddle1Y + 150 && m_position.x < 80){            // if checking for collision with the first paddle
+                setVelocity(m_angle + PI/2);
             }
-            if(m_position.y >= paddle2Y && m_position.y <= paddle2Y + 150 && m_position.x > 740){
-                setVelocity(m_angle*(180/PI) + 180);
-                std::cout << "colision 1" << std::endl;
+
+            if(m_position.y >= paddle2Y && m_position.y <= paddle2Y + 150 && m_position.x > 695){            // if checking for collision with the second paddle
+                setVelocity(m_angle + PI/2);
+            }
+
+            if(m_position.y < 0){                   // if checking for top bound
+                setVelocity(m_angle - PI/2);
+            }
+
+            if(m_position.y > 780){                 // if checking for bottom bound
+                setVelocity(m_angle + PI/2);
             }
         }
         

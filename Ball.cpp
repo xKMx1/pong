@@ -21,23 +21,16 @@ Ball::Ball() {
     m_sprite.setSize(m_size);
 }
 
-void Ball::setBallPosition(float x, float y) {
-    m_position.x = x;
-    m_position.y = y;
-}
-
 sf::Vector3f Ball::getManifold(const sf::FloatRect& overlap, const sf::Vector2f& collisionNormal)
     {
         //the collision normal is stored in x and y, with the penetration in z
         sf::Vector3f manifold;
 
-        if (overlap.width < overlap.height)
-        {
+        if (overlap.width < overlap.height){
             manifold.x = (collisionNormal.x < 0) ? 1.f : -1.f;
             manifold.z = overlap.width;
         }
-        else
-        {
+        else{
             manifold.y = (collisionNormal.y < 0) ? 1.f : -1.f;
             manifold.z = overlap.height;
         }
@@ -57,29 +50,7 @@ void Ball::resolve(const sf::Vector3f& manifold)
     m_velocity = reflect(m_velocity, normal);
 }
 
-void Ball::detectCollision(sf::FloatRect paddle1, sf::FloatRect paddle2, int* score1, int* score2){
-    if(m_position.y < 0){                   // if checking for top bound
-        setVelocity(m_angle - PI/2);
-    }
-
-    if(m_position.y > 780){                 // if checking for bottom bound
-        setVelocity(m_angle + PI/2);
-    }
-
-    if(m_position.x < 0){
-        *score2 += 1;
-        setBallPosition(400.0f, 400.0f);
-        m_sprite.setPosition(m_position);
-    }
-
-    if(m_position.x > 780){
-        *score1 += 1;
-        setBallPosition(400.0f, 400.0f);
-        m_sprite.setPosition(m_position);
-    }
-}
-
-void Ball::update(float dt, sf::FloatRect paddle1, sf::FloatRect paddle2) {
+void Ball::update(float dt, sf::FloatRect paddle1, sf::FloatRect paddle2, sf::FloatRect screenBound) {
     m_position += m_velocity * dt * m_speed;
     m_sprite.setPosition(m_position);
 
@@ -93,6 +64,13 @@ void Ball::update(float dt, sf::FloatRect paddle1, sf::FloatRect paddle2) {
     }
 
     if (paddle2.intersects(this->getSprite().getGlobalBounds(), overlap))
+    {
+        auto collisionNormal = paddle2.getPosition() - m_sprite.getPosition();
+        auto manifold = getManifold(overlap, collisionNormal);
+        resolve(manifold);
+    }
+
+    if (!screenBound.intersects(this->getSprite().getGlobalBounds(), overlap))
     {
         auto collisionNormal = paddle2.getPosition() - m_sprite.getPosition();
         auto manifold = getManifold(overlap, collisionNormal);

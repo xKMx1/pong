@@ -14,10 +14,8 @@ class Ball : private GameObject{
     public:
         Ball();
         sf::Vector3f getManifold(const sf::FloatRect& overlap, const sf::Vector2f& collisionNormal);
-        void setVelocity(float angle);
         void resolve(const sf::Vector3f& manifold);
         void setBallPosition(float x, float y);
-        void detectCollision(sf::FloatRect paddle1, sf::FloatRect paddle2, int* score1, int* score2);
-        void update(float dt, sf::FloatRect paddle1, sf::FloatRect paddle2);
+        void update(float dt, sf::FloatRect paddle1, sf::FloatRect paddle2, sf::FloatRect screenBound);
         sf::RectangleShape getSprite();
 };

@@ -2,6 +2,7 @@
 
 int main(){
     sf::RenderWindow window(sf::VideoMode(800, 800), "Pong");
+    sf::FloatRect windowBounds(sf::Vector2f(20.0f, 20.0f), window.getDefaultView().getSize() - sf::Vector2f(40.0f, 40.0f));
     sf::Texture texture;
     sf::Clock frameClock;
 
@@ -45,8 +46,7 @@ int main(){
             }
         }
 
-        ball.update(frameClock.restart().asSeconds(), paddle1.getSprite().getGlobalBounds(), paddle2.getSprite().getGlobalBounds());
-        ball.detectCollision(paddle1.getSprite().getGlobalBounds(), paddle2.getSprite().getGlobalBounds(), paddle1.getScore(), paddle2.getScore());
+        ball.update(frameClock.restart().asSeconds(), paddle1.getSprite().getGlobalBounds(), paddle2.getSprite().getGlobalBounds(), windowBounds);
 
         std::string score1String = std::to_string(*paddle1.getScore());
         std::string score2String = std::to_string(*paddle2.getScore());

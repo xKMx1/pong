@@ -1,9 +1,9 @@
 #include "Ball.h"
 
-
 int main(){
     sf::RenderWindow window(sf::VideoMode(800, 800), "Pong");
     sf::Texture texture;
+    sf::Clock frameClock;
 
     Paddle paddle1(80.0f, 325.0f, sf::Keyboard::Scancode::W, sf::Keyboard::Scancode::S);
     Paddle paddle2(740.0f, 325.0f, sf::Keyboard::Scancode::Up, sf::Keyboard::Scancode::Down);
@@ -45,9 +45,8 @@ int main(){
             }
         }
 
-        float dt = 5;
-        ball.detectCollision(paddle1.getSprite().getPosition().y, paddle2.getSprite().getPosition().y, paddle1.getScore(), paddle2.getScore());
-        ball.move(dt);
+        ball.update(frameClock.restart().asSeconds(), paddle1.getSprite().getGlobalBounds(), paddle2.getSprite().getGlobalBounds());
+        ball.detectCollision(paddle1.getSprite().getGlobalBounds(), paddle2.getSprite().getGlobalBounds(), paddle1.getScore(), paddle2.getScore());
 
         std::string score1String = std::to_string(*paddle1.getScore());
         std::string score2String = std::to_string(*paddle2.getScore());

@@ -1,16 +1,20 @@
 #include "Ball.h"
 
 Ball::Ball() {
+    m_speed = 300.0f;
+
     m_size.x = 20;
     m_size.y = 20;
+
+    m_sprite.setOrigin(10.0f, 10.0f);
 
     m_position.x = 400.0f;
     m_position.y = 400.0f;
 
-    m_angle = PI / 3;
+    m_velocity.x = 1.0f;
+    m_velocity.y = 100.0f;
 
-    m_velocity.x = 0;
-    m_velocity.y = 0;
+    m_velocity = normalise(m_velocity);
 
     setVelocity(m_angle);
 
@@ -30,23 +34,38 @@ void Ball::setBallPosition(float x, float y) {
     m_position.y = y;
 }
 
-void Ball::detectCollision(int paddle1Y, int paddle2Y, int* score1, int* score2){
-    if(m_position.y >= paddle1Y && m_position.y <= paddle1Y + 75 && m_position.x < 78){            // if checking for collision with the first paddle
-        setVelocity(m_angle + PI/2);
+sf::Vector3f Ball::getManifold(const sf::FloatRect& overlap, const sf::Vector2f& collisionNormal)
+    {
+        //the collision normal is stored in x and y, with the penetration in z
+        sf::Vector3f manifold;
+
+        if (overlap.width < overlap.height)
+        {
+            manifold.x = (collisionNormal.x < 0) ? 1.f : -1.f;
+            manifold.z = overlap.width;
+        }
+        else
+        {
+            manifold.y = (collisionNormal.y < 0) ? 1.f : -1.f;
+            manifold.z = overlap.height;
+        }
+        
+        return manifold;
     }
 
-    if(m_position.y >= paddle1Y + 76 && m_position.y <= paddle1Y + 150 && m_position.x < 78){            // if checking for collision with the first paddle
-        setVelocity(m_angle - PI/2);
-    }
+void Ball::resolve(const sf::Vector3f& manifold)
+{
+    //move the ball out of the solid object by the penetration amount
+    sf::Vector2f normal(manifold.x, manifold.y);
 
-    if(m_position.y >= paddle2Y && m_position.y <= paddle2Y + 75 && m_position.x > 693){            // if checking for collision with the second paddle
-        setVelocity(m_angle - PI/2);
-    }
+    m_position += normal * manifold.z;
+    m_sprite.setPosition(m_position);
 
-    if(m_position.y >= paddle2Y +76 && m_position.y <= paddle2Y + 150 && m_position.x > 693){            // if checking for collision with the second paddle
-        setVelocity(m_angle + PI/2);
-    }
+    //reflect the current velocity to make the ball bounce
+    m_velocity = reflect(m_velocity, normal);
+}
 
+void Ball::detectCollision(sf::FloatRect paddle1, sf::FloatRect paddle2, int* score1, int* score2){
     if(m_position.y < 0){                   // if checking for top bound
         setVelocity(m_angle - PI/2);
     }
@@ -68,10 +87,25 @@ void Ball::detectCollision(int paddle1Y, int paddle2Y, int* score1, int* score2)
     }
 }
 
-void Ball::move(float dt) {
-    setVelocity(m_angle); // colision detection and angle can't be m_angle
-    m_position += m_velocity * dt;
+void Ball::update(float dt, sf::FloatRect paddle1, sf::FloatRect paddle2) {
+    m_position += m_velocity * dt * m_speed;
     m_sprite.setPosition(m_position);
+
+    sf::FloatRect overlap;
+
+    if (paddle1.intersects(this->getSprite().getGlobalBounds(), overlap))
+    {
+        auto collisionNormal = paddle1.getPosition() - m_sprite.getPosition();
+        auto manifold = getManifold(overlap, collisionNormal);
+        resolve(manifold);
+    }
+
+    if (paddle2.intersects(this->getSprite().getGlobalBounds(), overlap))
+    {
+        auto collisionNormal = paddle2.getPosition() - m_sprite.getPosition();
+        auto manifold = getManifold(overlap, collisionNormal);
+        resolve(manifold);
+    }
 }
 
 sf::RectangleShape Ball::getSprite() {

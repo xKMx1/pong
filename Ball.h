@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Paddle.h"
+#include "VectorMath.h"
 
 class Ball : private GameObject{
     private:
@@ -9,11 +10,14 @@ class Ball : private GameObject{
         sf::RectangleShape m_sprite;
         sf::Vector2f m_velocity;
         float m_angle;
+        float m_speed;
     public:
         Ball();
+        sf::Vector3f getManifold(const sf::FloatRect& overlap, const sf::Vector2f& collisionNormal);
         void setVelocity(float angle);
+        void resolve(const sf::Vector3f& manifold);
         void setBallPosition(float x, float y);
-        void detectCollision(int paddle1Y, int paddle2Y, int* score1, int* score2);
-        void move(float dt);
+        void detectCollision(sf::FloatRect paddle1, sf::FloatRect paddle2, int* score1, int* score2);
+        void update(float dt, sf::FloatRect paddle1, sf::FloatRect paddle2);
         sf::RectangleShape getSprite();
 };

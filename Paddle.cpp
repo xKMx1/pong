@@ -13,7 +13,6 @@ Paddle::Paddle(float xPos, float yPos, sf::Keyboard::Scancode upKey, sf::Keyboar
     m_position.y = yPos;
 
     m_sprite.setRotation(90.0f);
-
     m_sprite.setFillColor(sf::Color(180,180,180));
     m_sprite.setPosition(m_position);
     m_sprite.setSize(m_size);

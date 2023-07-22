@@ -12,21 +12,13 @@ Ball::Ball() {
     m_position.y = 400.0f;
 
     m_velocity.x = 1.0f;
-    m_velocity.y = 100.0f;
+    m_velocity.y = 0.5f;
 
     m_velocity = normalise(m_velocity);
-
-    setVelocity(m_angle);
 
     m_sprite.setFillColor(sf::Color(180, 180, 180));
     m_sprite.setPosition(m_position);
     m_sprite.setSize(m_size);
-}
-
-void Ball::setVelocity(float angle) {
-    m_angle = angle;
-    m_velocity.x = cosf(m_angle);
-    m_velocity.y = sinf(m_angle);
 }
 
 void Ball::setBallPosition(float x, float y) {

@@ -1,7 +1,7 @@
 #include "Ball.h"
 
 Ball::Ball() {
-    m_speed = 300.0f;
+    m_speed = 800.0f;
 
     m_size.x = 20;
     m_size.y = 20;
@@ -90,14 +90,14 @@ void Ball::update(float dt, Paddle* paddle1, Paddle* paddle2, sf::FloatRect scre
 
     if(m_position.x < 0){
         paddle2->incrementScore();
-        sf::Vector2f velVecotor = sf::Vector2f(rand() % 10 + 1, rand() % 10 + 1);
+        sf::Vector2f velVecotor = sf::Vector2f((rand() % 10 + 1) - (rand() % 10 + 1), (rand() % 10 + 1) - (rand() % 10 + 1));
         this->setBallVelocity(normalise(velVecotor).x, normalise(velVecotor).y);
         this->setBallPosition(400.0f, 400.0f);
     }
 
     if(m_position.x > screenBound.width){
         paddle1->incrementScore();
-        sf::Vector2f velVecotor = sf::Vector2f(rand() % 10 + 1, rand() % 10 + 1);
+        sf::Vector2f velVecotor = sf::Vector2f((rand() % 10 + 1) - (rand() % 10 + 1), (rand() % 10 + 1) - (rand() % 10 + 1));
         this->setBallVelocity(normalise(velVecotor).x, normalise(velVecotor).y);
         this->setBallPosition(400.0f, 400.0f);
     }

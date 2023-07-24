@@ -30,9 +30,30 @@ int main(){
     scoreText.setOrigin(scoreText.getGlobalBounds().width / 2, scoreText.getGlobalBounds().height / 2);
     scoreText.setPosition(400.0f, 100.0f);
 
+    sf::Window dupaWindow;
+    
+
     window.setFramerateLimit(60);
     while(window.isOpen()){
         sf::Event event;
+
+        bool wKey = sf::Keyboard::isKeyPressed(sf::Keyboard::W);
+        bool sKey = sf::Keyboard::isKeyPressed(sf::Keyboard::S);
+        bool upKey = sf::Keyboard::isKeyPressed(sf::Keyboard::Up);
+        bool downKey = sf::Keyboard::isKeyPressed(sf::Keyboard::Down);
+
+        if(wKey){
+            paddle1.movePaddle(sf::Keyboard::Scancode::W);
+        }
+        if(sKey){
+            paddle1.movePaddle(sf::Keyboard::Scancode::S);
+        }
+        if(upKey){
+            paddle2.movePaddle(sf::Keyboard::Scancode::Up);
+        }
+        if(downKey){
+            paddle2.movePaddle(sf::Keyboard::Scancode::Down);
+        }
 
         while (window.pollEvent(event))
         {
@@ -40,9 +61,6 @@ int main(){
                 case sf::Event::Closed:
                     window.close();
                     break;
-                case sf::Event::KeyPressed:
-                    paddle1.movePaddle(event.key.scancode);
-                    paddle2.movePaddle(event.key.scancode);
             }
         }
 

@@ -2,6 +2,7 @@
 
 #include "Paddle.h"
 #include "VectorMath.h"
+#include <cstdlib>
 
 class Ball : private GameObject{
     private:
@@ -16,6 +17,7 @@ class Ball : private GameObject{
         sf::Vector3f getManifold(const sf::FloatRect& overlap, const sf::Vector2f& collisionNormal);
         void resolve(const sf::Vector3f& manifold);
         void setBallPosition(float, float);
+        void setBallVelocity(float, float);
         void update(float dt, Paddle* paddle1, Paddle* paddle2, sf::FloatRect screenBound);
         sf::RectangleShape getSprite();
 };

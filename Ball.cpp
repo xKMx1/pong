@@ -11,7 +11,7 @@ Ball::Ball() {
     m_position.x = 400.0f;
     m_position.y = 400.0f;
 
-    m_velocity.x = 1.0f;
+    m_velocity.x = 1.3f;
     m_velocity.y = 0.5f;
 
     m_velocity = normalise(m_velocity);
@@ -47,12 +47,18 @@ void Ball::resolve(const sf::Vector3f& manifold)
     m_sprite.setPosition(m_position);
 
     //reflect the current velocity to make the ball bounce
+    std::cout << reflect(m_velocity, normal).x << " | " << reflect(m_velocity, normal).y << " | " << sqrtf(powf(reflect(m_velocity, normal).x, 2) + powf(reflect(m_velocity, normal).y, 2)) << std::endl;
     m_velocity = reflect(m_velocity, normal);
 }
 
 void Ball::setBallPosition(float x, float y){
     m_position.x = x;
     m_position.y = y;
+}
+
+void Ball::setBallVelocity(float x, float y){
+    m_velocity.x = x;
+    m_velocity.y = y;
 }
 
 void Ball::update(float dt, Paddle* paddle1, Paddle* paddle2, sf::FloatRect screenBound) {
@@ -84,11 +90,15 @@ void Ball::update(float dt, Paddle* paddle1, Paddle* paddle2, sf::FloatRect scre
 
     if(m_position.x < 0){
         paddle2->incrementScore();
+        sf::Vector2f velVecotor = sf::Vector2f(rand() % 10 + 1, rand() % 10 + 1);
+        this->setBallVelocity(normalise(velVecotor).x, normalise(velVecotor).y);
         this->setBallPosition(400.0f, 400.0f);
     }
 
     if(m_position.x > screenBound.width){
         paddle1->incrementScore();
+        sf::Vector2f velVecotor = sf::Vector2f(rand() % 10 + 1, rand() % 10 + 1);
+        this->setBallVelocity(normalise(velVecotor).x, normalise(velVecotor).y);
         this->setBallPosition(400.0f, 400.0f);
     }
 }

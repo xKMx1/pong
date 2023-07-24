@@ -50,31 +50,46 @@ void Ball::resolve(const sf::Vector3f& manifold)
     m_velocity = reflect(m_velocity, normal);
 }
 
-void Ball::update(float dt, sf::FloatRect paddle1, sf::FloatRect paddle2, sf::FloatRect screenBound) {
+void Ball::setBallPosition(float x, float y){
+    m_position.x = x;
+    m_position.y = y;
+}
+
+void Ball::update(float dt, Paddle* paddle1, Paddle* paddle2, sf::FloatRect screenBound) {
     m_position += m_velocity * dt * m_speed;
     m_sprite.setPosition(m_position);
 
     sf::FloatRect overlap;
 
-    if (paddle1.intersects(this->getSprite().getGlobalBounds(), overlap))
+    if (paddle1->getSprite().getGlobalBounds().intersects(this->getSprite().getGlobalBounds(), overlap))
     {
-        auto collisionNormal = paddle1.getPosition() - m_sprite.getPosition();
+        auto collisionNormal = paddle1->getSprite().getPosition() - m_sprite.getPosition();
         auto manifold = getManifold(overlap, collisionNormal);
         resolve(manifold);
     }
 
-    if (paddle2.intersects(this->getSprite().getGlobalBounds(), overlap))
+    if (paddle2->getSprite().getGlobalBounds().intersects(this->getSprite().getGlobalBounds(), overlap))
     {
-        auto collisionNormal = paddle2.getPosition() - m_sprite.getPosition();
+        auto collisionNormal = paddle2->getSprite().getPosition() - m_sprite.getPosition();
         auto manifold = getManifold(overlap, collisionNormal);
         resolve(manifold);
     }
 
     if (!screenBound.intersects(this->getSprite().getGlobalBounds(), overlap))
     {
-        auto collisionNormal = paddle2.getPosition() - m_sprite.getPosition();
+        auto collisionNormal = paddle2->getSprite().getPosition() - m_sprite.getPosition();
         auto manifold = getManifold(overlap, collisionNormal);
         resolve(manifold);
+    }
+
+    if(m_position.x < 0){
+        paddle2->incrementScore();
+        this->setBallPosition(400.0f, 400.0f);
+    }
+
+    if(m_position.x > screenBound.width){
+        paddle1->incrementScore();
+        this->setBallPosition(400.0f, 400.0f);
     }
 }
 

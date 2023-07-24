@@ -46,7 +46,7 @@ int main(){
             }
         }
 
-        ball.update(frameClock.restart().asSeconds(), paddle1.getSprite().getGlobalBounds(), paddle2.getSprite().getGlobalBounds(), windowBounds);
+        ball.update(frameClock.restart().asSeconds(), &paddle1, &paddle2, windowBounds);
 
         std::string score1String = std::to_string(*paddle1.getScore());
         std::string score2String = std::to_string(*paddle2.getScore());

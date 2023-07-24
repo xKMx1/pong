@@ -29,6 +29,10 @@ void Paddle::movePaddle(sf::Keyboard::Scancode key){
     }
 }
 
+void Paddle::incrementScore(){
+    m_score++;
+}
+
 int Paddle::getPosition(){
     return m_position.y;
 }

@@ -12,6 +12,7 @@ class Paddle : private GameObject{
     public:
         Paddle(float xPos, float yPos, sf::Keyboard::Scancode upKey, sf::Keyboard::Scancode downKey);
         void movePaddle(sf::Keyboard::Scancode key);
+        void incrementScore();
         int getPosition();
         int* getScore();
         sf::RectangleShape getSprite();

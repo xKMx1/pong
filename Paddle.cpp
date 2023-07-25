@@ -30,6 +30,22 @@ void Paddle::movePaddle(sf::Keyboard::Scancode key){
     }
 }
 
+void Paddle::resetScore(){
+    m_score = 0;
+}
+
+void Paddle::setPosition(float y){
+    m_position.y = y;
+    m_sprite.setPosition(m_position);
+}
+
+int Paddle::checkForWin(){
+    if(m_score == 10){
+        return 1;
+    }
+    else return 0;
+}
+
 void Paddle::incrementScore(){
     m_score++;
 }

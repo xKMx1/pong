@@ -93,10 +93,12 @@ void Ball::update(float dt, Paddle* paddle1, Paddle* paddle2, sf::FloatRect scre
         if((rand() % 2 + 1) > 1)direction = 1;
         else direction = -1;
 
-        paddle2->incrementScore();
         sf::Vector2f velVecotor = sf::Vector2f((rand() % 100 + 1) * direction, (rand() % 20 + 1) * direction);
         this->setBallVelocity(normalise(velVecotor).x, normalise(velVecotor).y);
         this->setBallPosition(400.0f, 400.0f);
+        paddle2->setPosition(screenBound.height/2);
+        paddle1->setPosition(screenBound.height/2);
+        paddle2->incrementScore();
     }
 
     if(m_position.x > screenBound.width){
@@ -104,10 +106,12 @@ void Ball::update(float dt, Paddle* paddle1, Paddle* paddle2, sf::FloatRect scre
         if((rand() % 2 + 1) > 1)direction = 1;
         else direction = -1;
 
-        paddle1->incrementScore();
         sf::Vector2f velVecotor = sf::Vector2f((rand() % 100 + 1) * direction, (rand() % 20 + 1) * direction);
         this->setBallVelocity(normalise(velVecotor).x, normalise(velVecotor).y);
         this->setBallPosition(400.0f, 400.0f);
+        paddle1->setPosition(screenBound.height/2);
+        paddle2->setPosition(screenBound.height/2);
+        paddle1->incrementScore();
     }
 }
 

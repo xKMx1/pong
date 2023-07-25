@@ -14,6 +14,9 @@ class Paddle : private GameObject{
         void movePaddle(sf::Keyboard::Scancode key);
         void incrementScore();
         int getPosition();
+        int checkForWin();
+        void setPosition(float);
+        void resetScore();
         int* getScore();
         sf::RectangleShape getSprite();
 };

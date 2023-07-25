@@ -20,6 +20,8 @@ int main(){
     std::string score2String = std::to_string(*paddle2.getScore());
     score1String.append(score2String);
 
+    std::string endingString = "    GG\nWanna next?\nPress enter";
+
     sf::Text scoreText;
     scoreText.setFont(font);
     scoreText.setString(score1String);
@@ -30,9 +32,6 @@ int main(){
     scoreText.setOrigin(scoreText.getGlobalBounds().width / 2, scoreText.getGlobalBounds().height / 2);
     scoreText.setPosition(400.0f, 100.0f);
 
-    sf::Window dupaWindow;
-    
-
     window.setFramerateLimit(60);
     while(window.isOpen()){
         sf::Event event;
@@ -41,6 +40,7 @@ int main(){
         bool sKey = sf::Keyboard::isKeyPressed(sf::Keyboard::S);
         bool upKey = sf::Keyboard::isKeyPressed(sf::Keyboard::Up);
         bool downKey = sf::Keyboard::isKeyPressed(sf::Keyboard::Down);
+        bool enterKey = sf::Keyboard::isKeyPressed(sf::Keyboard::Enter);
 
         if(wKey){
             paddle1.movePaddle(sf::Keyboard::Scancode::W);
@@ -64,12 +64,28 @@ int main(){
             }
         }
 
-        ball.update(frameClock.restart().asSeconds(), &paddle1, &paddle2, windowBounds);
 
         std::string score1String = std::to_string(*paddle1.getScore());
         std::string score2String = std::to_string(*paddle2.getScore());
         score1String.append(score2String);
         scoreText.setString(score1String);
+
+
+        if(!(paddle1.checkForWin() || paddle2.checkForWin())){ 
+            ball.update(frameClock.restart().asSeconds(), &paddle1, &paddle2, windowBounds);
+        }
+        else{
+            scoreText.setPosition(scoreText.getGlobalBounds().width/3*4, 50);
+            scoreText.setLetterSpacing(2.2);
+            scoreText.setLineSpacing(1.4);
+            scoreText.setString(endingString);
+            if(enterKey){
+                paddle1.resetScore();
+                paddle2.resetScore();
+                scoreText.setLetterSpacing(10);
+                scoreText.setPosition(400.0f, 100.0f);
+            }
+        }
 
         window.clear();
         window.draw(scoreText);

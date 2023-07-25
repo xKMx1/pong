@@ -89,15 +89,23 @@ void Ball::update(float dt, Paddle* paddle1, Paddle* paddle2, sf::FloatRect scre
     }
 
     if(m_position.x < 0){
+        int direction;
+        if((rand() % 2 + 1) > 1)direction = 1;
+        else direction = -1;
+
         paddle2->incrementScore();
-        sf::Vector2f velVecotor = sf::Vector2f((rand() % 10 + 1) - (rand() % 10 + 1), (rand() % 10 + 1) - (rand() % 10 + 1));
+        sf::Vector2f velVecotor = sf::Vector2f((rand() % 100 + 1) * direction, (rand() % 20 + 1) * direction);
         this->setBallVelocity(normalise(velVecotor).x, normalise(velVecotor).y);
         this->setBallPosition(400.0f, 400.0f);
     }
 
     if(m_position.x > screenBound.width){
+        int direction;
+        if((rand() % 2 + 1) > 1)direction = 1;
+        else direction = -1;
+
         paddle1->incrementScore();
-        sf::Vector2f velVecotor = sf::Vector2f((rand() % 10 + 1) - (rand() % 10 + 1), (rand() % 10 + 1) - (rand() % 10 + 1));
+        sf::Vector2f velVecotor = sf::Vector2f((rand() % 100 + 1) * direction, (rand() % 20 + 1) * direction);
         this->setBallVelocity(normalise(velVecotor).x, normalise(velVecotor).y);
         this->setBallPosition(400.0f, 400.0f);
     }
